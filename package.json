@@ -1,0 +1,20 @@
+{
+  "name": "d3-link-register",
+  "version": "0.0.0",
+  "description": "Implements a class to make working with the data structure expected by D3js graph layouts easier.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -u tdd tests.js"
+  },
+  "repository": "",
+  "keywords": [
+    "d3",
+    "d3js",
+    "graph",
+    "layout",
+    "connected",
+    "graph"
+  ],
+  "author": "Andrew Winterman",
+  "license": "MIT"
+}
