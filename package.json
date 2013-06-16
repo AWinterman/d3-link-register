@@ -16,5 +16,10 @@
     "graph"
   ],
   "author": "Andrew Winterman",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "d3": "~3.2.0",
+    "mocha": "~1.11.0",
+    "tape": "~1.0.4"
+  }
 }

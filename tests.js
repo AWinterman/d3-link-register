@@ -96,4 +96,4 @@ suite('LinkRegister:', function(){
       assert.deepEqual(register.links.indexOf(L), -1)
     }
   })
-
+}
