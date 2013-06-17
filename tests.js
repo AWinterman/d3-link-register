@@ -60,11 +60,13 @@ test("no repeated indices", function(t){
     }
     return a
   }, [])
-  t.deepEqual(result.length, expected, register.nodes)
+
+  t.deepEqual(result.length, expected, "result had the wrong lenght")
 })
 
 test('register.index', function(t){
   t.plan(1)
+  var register = new LinkRegister([], nodes)
   var L = {'source': register.nodes[0], 'target': register.nodes[1]}
   register.add(L)
 
@@ -72,33 +74,34 @@ test('register.index', function(t){
     , result = register.index(L)
   t.deepEqual(expected, result, "didn't get the right index")
 })
-//  TODO figure out a way to do calculate the number of tests that will be run
-//  before hand
-// test("add links", function(t){
-//   while (register.links.length < 30){
-//     //picking a random element of nodes
-//     var i = ~~ (Math.random() * nodes.length)
-//       , j = ~~ (Math.random() * nodes.length)
-//       , new_link
-// 
-//     new_link = {source: register.nodes[i], target: register.nodes[j]}
-//     register.add(new_link)
-// 
-//     t.ok(register.register[register.name(new_link)], "link was not added to links")
-//     
-//     //this needs to check for indices instead
-//     t.ok(register.has(new_link), new_link + "was not addd to register.links")
-//     t.notDeepEqual(register.index(new_link), -1, new_link + "was not addd to register.links")
-//   }
-// 
-//   t.plan(94)
-// })
-// 
+
+test("can add links", function(t){
+  t.plan(1)
+  t.ok(make_links(register, 20, "make links threw an exception"))
+})
+
+test("does not duplicate existing links", function(t){
+  t.plan(1)
+
+  var register = new LinkRegister([], nodes)
+    , i = ~~ (Math.random() * nodes.length)
+    , j = ~~ (Math.random() * nodes.length)
+    , new_link = {source: register.nodes[i], target: register.nodes[j]}
+
+  register.add(new_link)
+  register.add(new_link)
+  register.add(new_link)
+
+  t.deepEqual(register.links.length, 1, "there were duplicates")
+
+})
+
 test("remove a link", function(t){
   t.plan(4)
   //remove a few links:
+  var register = new LinkRegister([], nodes)
   var n = 2
-
+  make_links(register, 30)
   for (var i = 0; i < n; ++i){
     link_index = ~~ (Math.random() * register.links.length)
     var L = register.links[i]
@@ -108,3 +111,16 @@ test("remove a link", function(t){
     t.deepEqual(register.links.indexOf(L), -1)
   }
 })
+
+function make_links(register, n){
+  while (register.links.length < 30){
+    //picking a random element of nodes
+    var i = ~~ (Math.random() * nodes.length)
+      , j = ~~ (Math.random() * nodes.length)
+      , new_link
+
+    new_link = {source: register.nodes[i], target: register.nodes[j]}
+    register.add(new_link)
+  }
+  return register.links
+}
