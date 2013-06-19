@@ -8,3 +8,4 @@ Implements a class to make working with the data structure expected by D3js grap
 TODO:
 - Documentation
 - better comments for the `LinkRegister.ensure_shape` function.
+- add a demo which has beefy/browserfy for the example.
