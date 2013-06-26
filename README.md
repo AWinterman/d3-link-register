@@ -1,6 +1,7 @@
 d3-link-register
 ================
 
+
 A class to make working with the data structure expected by D3js graph layouts easier.
 
 [![Build Status](https://secure.travis-ci.org/AWinterman/d3-mapping.png)](http://travis-ci.org/AWinterman/d3-link-register) 
@@ -111,3 +112,10 @@ the link name (of form "<target>,<source>") to the link itself.
 
   **returns** `register.nodes`
 
+----------
+
+## Known issues: ##
+- You can occasionally break chrome if you remove a node that has a large
+  number of connections. Not sure why this is.
+
+License: MIT
