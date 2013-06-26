@@ -1,6 +1,11 @@
+// This example can be run with `npm run example`.
+// It depends on having d3, d3-link-register, and beefy installed.
+// You simply run `npm run install-example` to install these dependencies.
+
 var d3 = require("d3")
   , LinkRegister = require("../index.js")
 
+// Establishing some constants
 var width = 960
   , height = 500
   , CURSOR_WIDTH = 30
@@ -9,6 +14,7 @@ var width = 960
 
 var fill = d3.scale.category20().domain(d3.range(20))
 
+// The force directed graph.
 var force = register.force
     .size([width, height])
     .linkDistance(30)
@@ -135,5 +141,3 @@ function restart() {
 
   force.start()
 }
-
-

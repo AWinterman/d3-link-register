@@ -86,6 +86,10 @@ proto.add_link = function(link) {
   return false
 }
 
+//TODO: add functionallity so you can decide whether you care if a link to and
+// from the same node already exists. There should also be something that tells
+// you how many redundant links there are.
+
 proto.add_node = function(node) {
   this.nodes.push(node)
   // the following seem redundant
@@ -104,8 +108,7 @@ proto.remove_link = function(link) {
   return remove_link.call(this, link) || remove_link.call(this, reverse)
 }
 
-
-// remove the attribute from the register
+// A function to carry out the removal of links.
 function remove_link(link) {
   if(this.has(link)) {
     //note that links that were once in the register but are no longer now
@@ -149,6 +152,7 @@ proto.remove_node = function(node) {
       this.nodes.splice(i, 1)
     }
   }, this)
+  this.force.nodes(this.nodes)
 }
 
 proto.init = function(){
@@ -166,6 +170,7 @@ proto.ensure_shape = function(){
     , range = []
     , used = []
 
+  // figuring out the current state of the indices
   this.nodes.forEach(function(d, i){ 
     var idx = d[this.index_attr]
     if (idx !== undefined) {
