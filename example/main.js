@@ -118,7 +118,6 @@ function restart() {
 
   link.exit().remove()
 
-  console.log(register.nodes.map(function(d){ return d.idx }))
   node = node.data(register.nodes, function(d){ return d.idx })
 
   node.exit().remove()
@@ -133,8 +132,6 @@ function restart() {
   cn.append("text")
     .attr("transform", "translate(10, 5)")
     .text(function(d){ return d.idx })
-
-  cn.call(force.drag)
 
   force.start()
 }

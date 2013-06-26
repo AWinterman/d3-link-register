@@ -143,17 +143,19 @@ proto.orphan_node = function(node) {
 proto.remove_node = function(node) {
   var idx
   this.orphan_node(node)
-  this.nodes.some(function(d, i){
+  this.nodes.forEach(function(d, i){
     idx = d[this.index_attr]
-    return d[this.index_attr] === node[this.index_attr]
+    if(idx === node[this.index_attr]) {
+      this.nodes.splice(i, 1)
+    }
   }, this)
-  this.nodes.splice(idx, 1)
 }
 
 proto.init = function(){
   // A convenience function for d3
   // for easy interop with d3
-  this.force.nodes(this.nodes)
+  this.force
+    .nodes(this.nodes)
     .links(this.links)
   return this.force 
 }  
