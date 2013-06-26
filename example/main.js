@@ -23,15 +23,12 @@ var force = register.force
 
 register.init()
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#graph")
+    .append("svg")
     .attr("width", width)
     .attr("height", height)
     .on("mousemove", mousemove)
     .on("mousedown", mousedown)
-
-svg.append("rect")
-    .attr("width", width)
-    .attr("height", height)
 
 var node = svg.selectAll(".node")
   , link = svg.selectAll(".link")

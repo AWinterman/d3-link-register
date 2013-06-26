@@ -3,6 +3,13 @@
 <meta charset="utf-8">
 <style>
 
+#graph { 
+    margin-left: auto;
+    margin-right: auto;
+    width: 960px;
+    height: 500px;
+}
+
 rect {
   fill: none;
   pointer-events: all;
@@ -36,6 +43,12 @@ rect {
     display: inline-block
 }
 
+#text {
+    padding: 10em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 pre {
     display: inline
 }
@@ -43,8 +56,8 @@ pre {
 </style>
 </head>
 <body>
-<script src="main.js"></script>
-<div>
+<div id=graph></div>
+<div id=text>
 <div id=explanation>
     A reimplementation of the Mike Bostocks <a href=#>Construct a Layout</a> using
 <pre>d3-link-register</pre>
@@ -59,5 +72,8 @@ Hold <pre>shift</pre> and click to remove nodes.
 </li>
 </div>
 </div>
+
+<script src="main.js"></script>
 </body>
+
 </html>
