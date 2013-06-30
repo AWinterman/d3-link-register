@@ -144,15 +144,27 @@ proto.orphan_node = function(node) {
 
 // orphan the node, then remove it from the nodes object
 proto.remove_node = function(node) {
-  var idx
-  this.orphan_node(node)
-  this.nodes.forEach(function(d, i){
-    idx = d[this.index_attr]
-    if(idx === node[this.index_attr]) {
-      this.nodes.splice(i, 1)
-    }
-  }, this)
-  this.force.nodes(this.nodes)
+  if (node.length) {
+    remove_nodes.call(this, node)
+  } else {
+    remove_nodes.call(this, [node])
+  }
+}
+
+function remove_nodes(nodes) {
+  var self = this
+
+  nodes.forEach(function(node) {
+    self.orphan_node(node)
+    self.nodes.forEach(function(d, i){
+      var idx = d[self.index_attr]
+      if(idx === node[self.index_attr]) {
+        self.nodes.splice(i, 1)
+      }
+    })
+    self.force.nodes(self.nodes)
+  })
+
 }
 
 proto.init = function(){

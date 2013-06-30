@@ -21,5 +21,12 @@
   "license": "MIT",
   "dependencies": {
     "tape": "~1.0.4"
+  },
+  "devDependencies": {
+    "tape":"~1.0.4"
+  },
+  "testling": {
+    "files": "tests.js",
+    "browsers": ["ie8", "ie9", "ie10", "ff", "chrome"]
   }
 }

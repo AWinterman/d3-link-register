@@ -9,7 +9,7 @@ var d3 = require("d3")
 var width = 960
   , height = 500
   , CURSOR_WIDTH = 30
-  , DELETE_WIDTH = 10
+  , DELETE_WIDTH = 30
   , register = new LinkRegister(d3.layout.force(), null, [{}], 'idx')
 
 var fill = d3.scale.category20().domain(d3.range(20))
@@ -38,17 +38,19 @@ var cursor = svg.append("circle")
     .attr("transform", "translate(-100,-100)")
     .attr("class", "cursor")
 
-d3.select(window).on("keydown", function(){
-  if (event.keyCode === 16) {
-    cursor.attr("r", DELETE_WIDTH)
-  }
-})
-
-d3.select(window).on("keyup", function(){
-  if (event.keyCode === 16) {
-    cursor.attr("r", CURSOR_WIDTH)
-  }
-})
+d3.select(window)
+  .on("keydown", function(){
+    if (event.keyCode === 16) {
+      cursor.attr("r", DELETE_WIDTH)
+            .attr("class", "cursor delete")
+    }
+  })
+  .on("keyup", function(){
+    if (event.keyCode === 16) {
+      cursor.attr("r", CURSOR_WIDTH)
+            .attr("class", "cursor")
+    }
+  })
 
 restart()
 
@@ -61,21 +63,24 @@ function mousedown() {
     regular_mousedown.call(this)
   }
   else {
-
     shift_mousedown.call(this)
   }
 }
 
 function shift_mousedown() {
   var point = d3.mouse(this)
+      , nodes_to_remove = []
 
   register.nodes.forEach(function(target) {
     var x = target.x - point[0]
       , y = target.y - point[1] 
-    if (Math.sqrt(x*x + y*y) < DELETE_WIDTH) {
-      register.remove_node(target)
+    console.log(x*x + y*y, DELETE_WIDTH*DELETE_WIDTH)
+    if (x*x + y*y < DELETE_WIDTH*DELETE_WIDTH) {
+      this.push(target)
     }
-  })
+  }, nodes_to_remove)
+
+  register.remove_node(nodes_to_remove)
 
   restart()
 }
@@ -107,9 +112,6 @@ function tick() {
   node.attr("transform", function(d){
     return "translate(" + d.x + "," + d.y + ")"
   })
-  //  .attr("cx", function(d){ return d.x})
-  //  .attr("cy", function(d){ return d.y})
-
 }
 
 function restart() {
@@ -135,6 +137,8 @@ function restart() {
   cn.append("text")
     .attr("transform", "translate(10, 5)")
     .text(function(d){ return d.idx })
+
+  cn.call(force.drag)
 
   force.start()
 }

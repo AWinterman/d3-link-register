@@ -19,10 +19,24 @@ rect {
   fill: #000;
 }
 
+.node text {
+   user-select: none;
+   -o-user-select:none;
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+}
+
 .cursor {
   fill: none;
   stroke: brown;
   pointer-events: none;
+}
+
+.cursor.delete {
+    fill: red;
+    stroke: red;
+    opacity: 0.1;
 }
 
 .link {
@@ -57,22 +71,6 @@ pre {
 </head>
 <body>
 <div id=graph></div>
-<div id=text>
-<div id=explanation>
-    A reimplementation of the Mike Bostocks <a href=#>Construct a Layout</a> using
-<pre>d3-link-register</pre>
-</div>
-
-<div id="instruction">
-<li>
-Click to add nodes.
-</li>
-<li>
-Hold <pre>shift</pre> and click to remove nodes.
-</li>
-</div>
-</div>
-
 <script src="main.js"></script>
 </body>
 
