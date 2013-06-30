@@ -8,12 +8,11 @@ function LinkRegister(force, links, nodes, index_attr){
   this.index_attr = index_attr || 'index'
   this.register = {}
 
-  this._circular_links = false
+  this._allow_loops = false
   this._directed = false
 
   this.ensure_shape()
 }
-
 
 var cons = LinkRegister
   , proto = cons.prototype
@@ -27,9 +26,9 @@ proto.name = function(link){
   return link.source[this.index_attr] + "," + link.target[this.index_attr]
 }
 
-proto.circular_links = function(bool){
-  this._circular_links = bool || this._circular_links
-  var out = arguments.length ? this : this._circular_links 
+proto.allow_loops = function(bool){
+  this._allow_loops = bool || this._allow_loops
+  var out = arguments.length ? this : this._allow_loops 
   return out
 }
 
@@ -62,13 +61,13 @@ proto.index = function(link){
 
 proto.has = function(link){
   var name = this.name(link)
-  if (!this.circular_links()) {
+  if (!this.allow_loops()) {
     if (link.target[this.index_attr] === link.source[this.index_attr]) {
       return true
     }
   }
   if (!this.directed()) {
-    return !!this.register[name] || !!this.register[name.split().reverse().join()]
+    return !!this.register[name] || !!this.register[name.split(",").reverse().join()]
   } else {
     return !!this.register[name] 
   }
@@ -86,9 +85,7 @@ proto.add_link = function(link) {
   return false
 }
 
-//TODO: add functionallity so you can decide whether you care if a link to and
-// from the same node already exists. There should also be something that tells
-// you how many redundant links there are.
+//TODO: add support for non-simple graphs.
 
 proto.add_node = function(node) {
   this.nodes.push(node)
@@ -97,7 +94,6 @@ proto.add_node = function(node) {
   this.ensure_shape()
   return node
 }
-
 
 proto.remove_link = function(link) {
   var reverse 

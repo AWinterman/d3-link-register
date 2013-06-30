@@ -57,6 +57,14 @@ function run(loops, directed) {
     t.notDeepEqual(register.allow_loops, undefined)
   })
 
+  test("setters actually set", function(t){ 
+    t.plan(2)
+
+    var register = new_register(force, null, nodes)
+    t.equal(register.directed(), directed)
+    t.equal(register.allow_loops(), loops)
+  })
+
   test("nodes all have idx", function(t){
     t.plan(register.nodes.length)
     register.nodes.forEach(
@@ -66,7 +74,7 @@ function run(loops, directed) {
     )
   })
 
-  test("no repeated indices", function(t){
+  test("no repeated index attributes on the nodes", function(t){
     t.plan(1)
     expected = register.nodes.length
     result = register.nodes.reduce(function(a, b){
@@ -80,7 +88,7 @@ function run(loops, directed) {
   })
 
   test('register.index', function(t){
-    t.plan(1)
+    t.plan(2)
 
     var register = new_register(force, null, nodes)
     var L = {'source': register.nodes[0], 'target': register.nodes[1]}
@@ -88,7 +96,20 @@ function run(loops, directed) {
 
     var expected = 0
       , result = register.index(L)
-    t.deepEqual(expected, result, "didn't get the right index")
+    t.deepEqual(expected, result, "finds the link")
+
+    if (directed) {
+      // looking for the reverrse of L should not add another link.
+      expected = -1
+      result = register.index(reverse(L))
+      t.deepEqual(expected, result, "reverse does not match the link")
+    } else {
+      // looking for reverse should find the link
+      expected = 0
+      result = register.index(reverse(L))
+      t.deepEqual(expected, result, "reverse matches the link")
+    }
+
   })
 
   test("can add links", function(t){
@@ -109,8 +130,63 @@ function run(loops, directed) {
     register.add_link(new_link)
 
     t.deepEqual(register.links.length, 1, "there were duplicates")
-
   })
+
+  test("membership checks respect the `directed` setting", function(t) {
+    t.plan(1)
+    var register = new_register(force, null, nodes)
+      , i = 1 // a random number
+      , j = i + 1
+      , new_link = {source: register.nodes[i], target: register.nodes[j]}
+      , reversed = reverse(new_link)
+      , expected
+      , has
+
+    register.add_link(new_link)
+
+    has = register.has(reversed)
+    expected = !register.directed()
+
+    t.equal(expected, has)
+  })
+
+  test("adding reverse links respects the `directed` setting", function(t) {
+    t.plan(1)
+    var register = new_register(force, null, nodes)
+      , i = ~~ (Math.random() * nodes.length)
+      , j = i + 1
+      , new_link = {source: register.nodes[i], target: register.nodes[j]}
+      , expected
+
+    if (register.directed()) {
+      register.add_link(new_link)
+      register.add_link(reverse(new_link))
+      expected = 2
+    } else {
+      register.add_link(new_link)
+      register.add_link(reverse(new_link))
+      expected = 1
+    }
+
+    t.deepEqual(register.links.length, expected)
+  })
+
+  test("adding loops respects `allow_loops` setting", function(t) {
+    t.plan(1)
+    var register = new_register(force, null, nodes)
+      , i = ~~ (Math.random() * nodes.length)
+      , j = i
+      , new_link = {source: register.nodes[i], target: register.nodes[j]}
+
+    register.add_link(new_link)
+    if (register.allow_loops()){
+      expected = 1
+    } else {
+      expected = 0
+    }
+    t.deepEqual(register.links.length, expected)
+  })
+
 
   test("remove a link", function(t){
     t.plan(4)
@@ -120,7 +196,6 @@ function run(loops, directed) {
     var n = 2
     make_links(register, 30)
     for (var i = 0; i < n; ++i){
-      link_index = ~~ (Math.random() * register.links.length)
       var L = register.links[i]
       register.remove_link(L)
       //now make sure the link is not in the register
@@ -129,11 +204,31 @@ function run(loops, directed) {
     }
   })
 
+  test("remove reverse of a link respects directed setting", function(t) {
+    t.plan(1)
+    var register = new_register(force, null, nodes)
+ 
+    var n = 2
+    make_links(register, 30)
+    var i = ~~ (Math.random() * register.links.length)
+      , L = reverse(register.links[i])
+    var result = register.remove_link(L)
+    expected = !register.directed()
+
+    t.equal(result, expected)
+
+    //now make sure the link is not in the register
+  })
+
+  function reverse(link) {
+    return {source: link.target, target: link.source}
+  }
+
   function identity(a){ return a }
 
   function make_links(register, n){
     while (register.links.length < 30){
-      //picking a random element of nodes
+      //picking a random nodes for the source and the target
       var i = ~~ (Math.random() * nodes.length)
         , j = ~~ (Math.random() * nodes.length)
         , new_link
