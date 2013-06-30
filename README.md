@@ -1,14 +1,9 @@
 d3-link-register
 ================
 
-
-A class to make working with the data structure expected by D3js graph layouts easier.
-
-## Node: ##
 [![Build Status](https://secure.travis-ci.org/AWinterman/d3-link-register.png)](http://travis-ci.org/AWinterman/d3-link-register) 
 
-## Browsers: ##
-[![browser support](https://ci.testling.com/AWinterman/d3-link-register.png)](https://ci.testling.com/AWinterman/d3-link-register)
+A class to make working with the data structure expected by D3js graph layouts easier.
 
 
 The link register provides methods to add and remove links and nodes,
@@ -97,13 +92,13 @@ the link name (of form "<target>,<source>") to the link itself.
   `index_attr`
 
 - `register.remove_link(link)`: Removes the supplied link from the register,
-  and updates the `register.force` object accordingly.
+  and updates the `register.force` object accordingly. 
 
-- `register.orphan_node(node)`: Removes all links from a given node. It calls
+- `register.orphan_node(node)`: Removes all links from a given node.  It calls
   `register.remove_link` repeatedly
 
-- `register.orphan_node(node)`: Orphans the node and then removes it from the
-  nodes array. It then updates the force object.
+- `register.remove_node(node)`: Orphans the node and then removes it from the
+  nodes array. You can now pass in an array of nodes to be removed.
 
 - `register.init()`: Calls the .nodes and .links methods of the
   `register.force` object with the appropriate arguments. 
@@ -123,4 +118,8 @@ the link name (of form "<target>,<source>") to the link itself.
 - You can occasionally break chrome if you remove a node that has a large
   number of connections. Not sure why this is.
 
-License: MIT
+## Compatibility ##
+
+[![browser support](https://ci.testling.com/AWinterman/d3-link-register.png)](https://ci.testling.com/AWinterman/d3-link-register)
+
+**License: MIT**

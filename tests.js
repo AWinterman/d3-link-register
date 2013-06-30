@@ -227,7 +227,8 @@ function run(loops, directed) {
   function identity(a){ return a }
 
   function make_links(register, n){
-    while (register.links.length < 30){
+    var n = n || 30
+    while (register.links.length < n){
       //picking a random nodes for the source and the target
       var i = ~~ (Math.random() * nodes.length)
         , j = ~~ (Math.random() * nodes.length)

@@ -139,6 +139,7 @@ proto.orphan_node = function(node) {
 }
 
 // orphan the node, then remove it from the nodes object
+// TODO: add support for operations on arrays to the rest, too
 proto.remove_node = function(node) {
   if (node.length) {
     remove_nodes.call(this, node)
