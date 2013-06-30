@@ -51,9 +51,9 @@ the link name (of form "<target>,<source>") to the link itself.
 
 - `register.name(link)`: Compute the name for a link based on the `index_attr` of it's target and source.
 
-- `register.circular_links(bool)`: Sets a flag to the boolean value of its
-  argument.  When true, allows the same node to be the target and source of a
-  link. 
+- `register.allow_loops(bool)`: Sets a flag to the boolean value of its
+  argument.  Setting this to true allows the graph to have loop edges. That is
+  it allows the same node to be the target and source of a link. 
   
   False by default.
 
@@ -61,9 +61,9 @@ the link name (of form "<target>,<source>") to the link itself.
   otherwise returns the link register itself.
 
 - `register.directed(bool)`: Sets a flag to the boolean value of its argument.
-  When true, the `link_register` will hold the direction of the link to be
-  significant. E.g. `{target: A, source: B}` and `{target: B, source: A}` are
-  considered to be different links. 
+  If true, the graph is held to be directed, that is `link_register` will hold
+  the direction of the link to be significant. In a directed graph `{target: A, source: B}` and
+  `{target: B, source: A}` are considered to be different links. 
   
   Defaults to false.
 
