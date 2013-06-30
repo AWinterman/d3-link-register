@@ -4,7 +4,9 @@ d3-link-register
 
 A class to make working with the data structure expected by D3js graph layouts easier.
 
-[![Build Status](https://secure.travis-ci.org/AWinterman/d3-mapping.png)](http://travis-ci.org/AWinterman/d3-link-register) 
+[![Build Status](https://secure.travis-ci.org/AWinterman/d3-link-register.png)](http://travis-ci.org/AWinterman/d3-link-register) 
+[![browser support](https://ci.testling.com/AWinterman/d3-link-register.png)](https://ci.testling.com/AWinterman/d3-link-register)
+
 
 The link register provides methods to add and remove links and nodes,
 efficiently check if the link is already in the layout and to remove all
