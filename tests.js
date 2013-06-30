@@ -121,15 +121,14 @@ function run(loops, directed) {
     t.plan(1)
 
     var register = new_register(force, null, nodes)
-      , i = ~~ (Math.random() * nodes.length)
-      , j = ~~ (Math.random() * nodes.length)
-      , new_link = {source: register.nodes[i], target: register.nodes[j]}
+      , nodes = chose_two(register.nodes)
+      , new_link = {source: nodes[0], target: nodes[1]}
 
     register.add_link(new_link)
     register.add_link(new_link)
     register.add_link(new_link)
 
-    t.deepEqual(register.links.length, 1, "there were duplicates")
+    t.deepEqual(register.links.length, 1)
   })
 
   test("membership checks respect the `directed` setting", function(t) {
@@ -153,10 +152,11 @@ function run(loops, directed) {
   test("adding reverse links respects the `directed` setting", function(t) {
     t.plan(1)
     var register = new_register(force, null, nodes)
-      , i = ~~ (Math.random() * nodes.length)
-      , j = i + 1
-      , new_link = {source: register.nodes[i], target: register.nodes[j]}
+      , nodes = chose_two(register.nodes)
+      , new_link = {source: nodes[0], target: nodes[1]}
       , expected
+
+    console.log(new_link, reverse(new_link))
 
     if (register.directed()) {
       register.add_link(new_link)
@@ -212,6 +212,7 @@ function run(loops, directed) {
     make_links(register, 30)
     var i = ~~ (Math.random() * register.links.length)
       , L = reverse(register.links[i])
+    console.log(L)
     var result = register.remove_link(L)
     expected = !register.directed()
 
@@ -239,4 +240,10 @@ function run(loops, directed) {
     }
     return register.links
   }
+}
+
+function chose_two(arr) {
+    var i = ~~ (Math.random() * arr.length)
+      , j = i === arr.length ? i - 1 : i + 1
+    return [arr[i], arr[j]]
 }
