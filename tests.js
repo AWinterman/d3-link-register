@@ -121,9 +121,8 @@ function run(loops, directed) {
     t.plan(1)
 
     var register = new_register(force, null, nodes)
-      , i = ~~ (Math.random() * nodes.length)
-      , j = ~~ (Math.random() * nodes.length)
-      , new_link = {source: register.nodes[i], target: register.nodes[j]}
+      , two = choose_two(nodes)
+      , new_link = {source: two[0], target: two[1]}
 
     register.add_link(new_link)
     register.add_link(new_link)
@@ -135,9 +134,8 @@ function run(loops, directed) {
   test("membership checks respect the `directed` setting", function(t) {
     t.plan(1)
     var register = new_register(force, null, nodes)
-      , i = 1 // a random number
-      , j = i + 1
-      , new_link = {source: register.nodes[i], target: register.nodes[j]}
+      , two = choose_two(nodes)
+      , new_link = {source: two[0], target: two[1]}
       , reversed = reverse(new_link)
       , expected
       , has
@@ -153,9 +151,8 @@ function run(loops, directed) {
   test("adding reverse links respects the `directed` setting", function(t) {
     t.plan(1)
     var register = new_register(force, null, nodes)
-      , i = ~~ (Math.random() * nodes.length)
-      , j = i + 1
-      , new_link = {source: register.nodes[i], target: register.nodes[j]}
+      , two = choose_two(nodes)
+      , new_link = {source: two[0], target: two[1]}
       , expected
 
     if (register.directed()) {
@@ -207,18 +204,27 @@ function run(loops, directed) {
   test("remove reverse of a link respects directed setting", function(t) {
     t.plan(1)
     var register = new_register(force, null, nodes)
- 
-    var n = 2
+      , n = 2
+      , two = choose_two(nodes)
+      , L =  {source: two[0], target: two[1]}
+
     make_links(register, 30)
-    var i = ~~ (Math.random() * register.links.length)
-      , L = reverse(register.links[i])
-    var result = register.remove_link(L)
+    register.add_link(L)
+    rL = reverse(L)
+    var result = register.remove_link(rL)
     expected = !register.directed()
 
     t.equal(result, expected)
 
     //now make sure the link is not in the register
   })
+
+  function choose_two(arr) {
+    var i = ~~ (Math.random() * arr.length)
+      , j = i == arr.length - 1 ? i - 1 : i + 1
+
+    return [arr[i], arr[j]]
+  }
 
   function reverse(link) {
     return {source: link.target, target: link.source}
