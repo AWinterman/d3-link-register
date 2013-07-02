@@ -14,8 +14,6 @@ run(false, true)
 run(true, true)
 
 function run(loops, directed) { 
-  console.log("allow loops? ", loops)
-  console.log("directed graph? ", loops)
   var loops = loops || false
     , directed = directed || false
     , new_register = register_generator(loops, directed)
@@ -198,13 +196,13 @@ function run(loops, directed) {
       var L = register.links[i]
       register.remove_link(L)
       //now make sure the link is not in the register
-      t.deepEqual(register.register[register.name(L)], null)
+      t.deepEqual(register.register[register.name(L)], undefined)
       t.deepEqual(register.links.indexOf(L), -1)
     }
   })
 
   test("remove reverse of a link respects directed setting", function(t) {
-    t.plan(1)
+    t.plan(2)
     var register = new_register(force, null, nodes)
       , n = 2
       , two = choose_two(nodes)
@@ -212,9 +210,22 @@ function run(loops, directed) {
 
     make_links(register, 30)
     register.add_link(L)
-    rL = reverse(L)
-    var result = register.remove_link(rL)
+
+    var rL = reverse(L)
+      , result = register.remove_link(rL)
     expected = !register.directed()
+
+    t.equal(result, expected)
+
+    var zero = {
+              source: register.nodes[0]
+            , target: register.nodes[~~(register.nodes.length - 1)]
+    }
+
+    register.add_link(zero)
+    rzero = reverse(zero)
+
+    var result = register.remove_link(rzero)
 
     t.equal(result, expected)
 
