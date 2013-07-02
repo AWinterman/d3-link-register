@@ -1,3 +1,5 @@
+// TODO: rather than choosing a random sample, iterate through every available
+// example and test that one.
 var test = require("tape")
 //loading app and setting up some dummy data
 
