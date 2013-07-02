@@ -14,6 +14,8 @@ run(false, true)
 run(true, true)
 
 function run(loops, directed) { 
+  console.log("allow loops? ", loops)
+  console.log("directed graph? ", loops)
   var loops = loops || false
     , directed = directed || false
     , new_register = register_generator(loops, directed)
