@@ -114,10 +114,6 @@ the link name (of form "<target>,<source>") to the link itself.
 
 ----------
 
-## Known issues: ##
-- You can occasionally break chrome if you remove a node that has a large
-  number of connections. Not sure why this is.
-
 ## Compatibility ##
 
 [![browser support](https://ci.testling.com/AWinterman/d3-link-register.png)](https://ci.testling.com/AWinterman/d3-link-register)
