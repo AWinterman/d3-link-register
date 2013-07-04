@@ -96,6 +96,7 @@ function run(loops, directed) {
 
     var expected = 0
       , result = register.index(L)
+
     t.deepEqual(expected, result, "finds the link")
 
     if (directed) {
@@ -121,8 +122,9 @@ function run(loops, directed) {
     t.plan(1)
 
     var register = new_register(force, null, nodes)
-      , nodes = chose_two(register.nodes)
-      , new_link = {source: nodes[0], target: nodes[1]}
+      , new_nodes = chose_two(register.nodes)
+      , new_link = {source: new_nodes[0], target: new_nodes[1]}
+  console.log(new_nodes)
 
     register.add_link(new_link)
     register.add_link(new_link)
@@ -152,20 +154,24 @@ function run(loops, directed) {
   test("adding reverse links respects the `directed` setting", function(t) {
     t.plan(1)
     var register = new_register(force, null, nodes)
-      , nodes = chose_two(register.nodes)
-      , new_link = {source: nodes[0], target: nodes[1]}
-      , expected
+     , nodes
+     , new_link
+     , expected
 
-    console.log(new_link, reverse(new_link))
+    make_unidirectional_links(register)
 
-    if (register.directed()) {
-      register.add_link(new_link)
-      register.add_link(reverse(new_link))
-      expected = 2
-    } else {
-      register.add_link(new_link)
-      register.add_link(reverse(new_link))
-      expected = 1
+    expected = 0
+    for (var i = 0, len = register.links.length; i < len; ++i) {
+      new_link = register.links[i]
+      if (register.directed()) {
+        register.add_link(new_link)
+        register.add_link(reverse(new_link))
+        expected += 2
+      } else {
+        register.add_link(new_link)
+        register.add_link(reverse(new_link))
+        expected += 1
+      }
     }
 
     t.deepEqual(register.links.length, expected)
@@ -205,18 +211,23 @@ function run(loops, directed) {
   })
 
   test("remove reverse of a link respects directed setting", function(t) {
-    t.plan(1)
     var register = new_register(force, null, nodes)
- 
-    var n = 2
-    make_links(register, 30)
-    var i = ~~ (Math.random() * register.links.length)
-      , L = reverse(register.links[i])
-    console.log(L)
-    var result = register.remove_link(L)
-    expected = !register.directed()
+      , new_link
+      , expected
+      , result
+      , L
 
-    t.equal(result, expected)
+    make_unidirectional_links(register)
+
+    t.plan(register.links.length)
+    counter = 0
+    while (register.directed() ? counter < register.links.length : register.links.length ) {
+      L = reverse(register.links[0])
+      result = register.remove_link(L)
+      expected = !register.directed()
+      t.equal(result, expected)
+      counter += 1
+    }
 
     //now make sure the link is not in the register
   })
@@ -242,8 +253,16 @@ function run(loops, directed) {
   }
 }
 
+
+function make_unidirectional_links(register) {
+    for (var i = 0, len = register.nodes.length - 1; i < len; i += 2) {
+      new_link = {source: register.nodes[i], target: register.nodes[i+1]}
+      register.add_link(new_link)
+    }
+}
+
 function chose_two(arr) {
     var i = ~~ (Math.random() * arr.length)
-      , j = i === arr.length ? i - 1 : i + 1
+      , j = i === arr.length - 1 ? i - 1 : i + 1
     return [arr[i], arr[j]]
 }
