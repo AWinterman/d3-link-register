@@ -1,6 +1,6 @@
 {
   "name": "d3-link-register",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Implements a class to make working with the data structure expected by D3js graph layouts easier.",
   "main": "index.js",
   "scripts": {
