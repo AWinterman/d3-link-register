@@ -17,7 +17,6 @@ function LinkRegister(force, links, nodes, index_attr){
   function identity(a){ return a }
 }
 
-
 var cons = LinkRegister
   , proto = cons.prototype
 

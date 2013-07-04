@@ -99,7 +99,6 @@ function run(loops, directed) {
     register.add_node({idx: 2})
 
     result = register.nodes.map(function(d) { return d.idx }).sort()
-    console.log(result, expected)
 
     for (var i = 0; i < expected.length; ++i) {
       t.equal(expected[i], result[i])
