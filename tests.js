@@ -78,8 +78,8 @@ function run(loops, directed) {
 
   test("no repeated index attributes on the nodes", function(t){
     t.plan(1)
-    expected = register.nodes.length
-    result = register.nodes.reduce(function(a, b){
+    var expected = register.nodes.length
+      , result = register.nodes.reduce(function(a, b){
       if (a.indexOf(b.idx) === -1){
           a.push(b)
       }
@@ -87,6 +87,23 @@ function run(loops, directed) {
     }, [])
 
     t.deepEqual(result.length, expected, "result had right length")
+  })
+
+  test("corrects idx when two nodes with identical idx are added", function(t) {
+    var register = new_register()
+      , expected = [0, 1, 2]
+
+    t.plan(expected.length)
+    register.add_node({idx: 2})
+    register.add_node({idx: 2})
+    register.add_node({idx: 2})
+
+    result = register.nodes.map(function(d) { return d.idx }).sort()
+    console.log(result, expected)
+
+    for (var i = 0; i < expected.length; ++i) {
+      t.equal(expected[i], result[i])
+    }
   })
 
   test('register.index', function(t){

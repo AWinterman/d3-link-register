@@ -2,7 +2,7 @@
 module.exports = LinkRegister
 
 function LinkRegister(force, links, nodes, index_attr){
-  this.force = force
+  this.force = force || {links: identity, nodes: identity}
   this.links = links || []
   this.nodes = nodes || []
   this.index_attr = index_attr || 'index'
@@ -10,16 +10,16 @@ function LinkRegister(force, links, nodes, index_attr){
 
   this._allow_loops = false
   this._directed = false
+  this._max_idx = 0
 
   this.ensure_shape()
+
+  function identity(a){ return a }
 }
+
 
 var cons = LinkRegister
   , proto = cons.prototype
-
-// if nodes don't have an index, assign them one. If you did not set the third
-// argument when you initialized the register, it defaults to "index"
-// Careful here, this will modify your node objects! 
 
 // links are nmaed based on their index_attr
 proto.name = function(link){
@@ -90,9 +90,14 @@ proto.add_link = function(link) {
 
 proto.add_node = function(node) {
   this.nodes.push(node)
+  if (isNaN(node[this.index_attr])) {
+    this._max_idx += 1
+    node[this.index_attr] = this._max_idx
+  } else {
+    this.ensure_shape()
+  }
   // the following seem redundant
   this.force.nodes(this.nodes)
-  this.ensure_shape()
   return node
 }
 
@@ -182,12 +187,18 @@ proto.ensure_shape = function(){
   this.nodes.forEach(function(d, i){ 
     var idx = d[this.index_attr]
     if (idx !== undefined) {
+      if (used.indexOf(idx) != -1) {
+        d[this.index_attr] = undefined
+        unindexed.push(i)
+      }
       used.push(idx)
     } else {
       unindexed.push(i)
     }
     range.push(i)
   }, this)
+
+  this._max_idx = range.sort().slice(-1)[0]
 
   // now I want those elements in range that are not used
   range = range.filter(function(d){

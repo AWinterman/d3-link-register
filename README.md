@@ -88,8 +88,8 @@ the link name (of form "<target>,<source>") to the link itself.
   **returns**: `true` if the link was added. `false` otherwise.
 
 - `register.add_node`: Adds a node to the register, and updates the
-  `register.force` object. Also makes sure that all the added nodes have the
-  `index_attr`
+  `register.force` object. Also makes sure that new nodes have a unique index
+   object.
 
 - `register.remove_link(link)`: Removes the supplied link from the register,
   and updates the `register.force` object accordingly. 
@@ -107,8 +107,8 @@ the link name (of form "<target>,<source>") to the link itself.
 
 - `register.ensure_shape()`: This method iterates through each node and makes
   sure it has an index. It will not assign a node an index which is already
-  used by another node, but it does not check to makes sure the existing
-  assignment is 1:1.
+  used by another node. It now  checks to makes sure the existing
+  assignments are 1:1.
 
   **returns** `register.nodes`
 
