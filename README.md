@@ -118,4 +118,15 @@ the link name (of form "<target>,<source>") to the link itself.
 
 [![browser support](https://ci.testling.com/AWinterman/d3-link-register.png)](https://ci.testling.com/AWinterman/d3-link-register)
 
+### A measure of technical debt ###
+See [codebux](https://github.com/substack/codebux) for more info.
+
+    +   100.00  # initial stipend
+    -    10.75  # index.js
+    -    14.48  # tests.js
+    —————————————————————————————————————————————————
+    +    74.76
+
+
+
 **License: MIT**
