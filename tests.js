@@ -228,19 +228,7 @@ function run(loops, directed) {
       t.equal(result, expected)
       counter += 1
     }
-    var zero = {
-              source: register.nodes[0]
-            , target: register.nodes[~~(register.nodes.length - 1)]
-    }
 
-    register.add_link(zero)
-    rzero = reverse(zero)
-
-    var result = register.remove_link(rzero)
-
-    t.equal(result, expected)
-
-    //now make sure the link is not in the register
   })
 
   function choose_two(arr) {
