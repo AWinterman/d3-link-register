@@ -1,3 +1,5 @@
+// TODO: rather than choosing a random sample, iterate through every available
+// example and test that one.
 var test = require("tape")
 //loading app and setting up some dummy data
 
@@ -124,7 +126,6 @@ function run(loops, directed) {
     var register = new_register(force, null, nodes)
       , new_nodes = chose_two(register.nodes)
       , new_link = {source: new_nodes[0], target: new_nodes[1]}
-  console.log(new_nodes)
 
     register.add_link(new_link)
     register.add_link(new_link)
@@ -136,9 +137,8 @@ function run(loops, directed) {
   test("membership checks respect the `directed` setting", function(t) {
     t.plan(1)
     var register = new_register(force, null, nodes)
-      , i = 1 // a random number
-      , j = i + 1
-      , new_link = {source: register.nodes[i], target: register.nodes[j]}
+      , two = choose_two(nodes)
+      , new_link = {source: two[0], target: two[1]}
       , reversed = reverse(new_link)
       , expected
       , has
@@ -205,7 +205,7 @@ function run(loops, directed) {
       var L = register.links[i]
       register.remove_link(L)
       //now make sure the link is not in the register
-      t.deepEqual(register.register[register.name(L)], null)
+      t.deepEqual(register.register[register.name(L)], undefined)
       t.deepEqual(register.links.indexOf(L), -1)
     }
   })
@@ -228,9 +228,27 @@ function run(loops, directed) {
       t.equal(result, expected)
       counter += 1
     }
+    var zero = {
+              source: register.nodes[0]
+            , target: register.nodes[~~(register.nodes.length - 1)]
+    }
+
+    register.add_link(zero)
+    rzero = reverse(zero)
+
+    var result = register.remove_link(rzero)
+
+    t.equal(result, expected)
 
     //now make sure the link is not in the register
   })
+
+  function choose_two(arr) {
+    var i = ~~ (Math.random() * arr.length)
+      , j = i == arr.length - 1 ? i - 1 : i + 1
+
+    return [arr[i], arr[j]]
+  }
 
   function reverse(link) {
     return {source: link.target, target: link.source}

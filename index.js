@@ -61,15 +61,16 @@ proto.index = function(link){
 
 proto.has = function(link){
   var name = this.name(link)
+    , out
   if (!this.allow_loops()) {
     if (link.target[this.index_attr] === link.source[this.index_attr]) {
       return true
     }
   }
   if (!this.directed()) {
-    return !!this.register[name] || !!this.register[name.split(",").reverse().join()]
+    return (this.register[name] !== undefined) || (this.register[name.split(",").reverse().join()] !== undefined)
   } else {
-    return !!this.register[name] 
+    return this.register[name] !== undefined 
   }
 }
   
@@ -107,9 +108,7 @@ proto.remove_link = function(link) {
 // A function to carry out the removal of links.
 function remove_link(link) {
   if(this.has(link)) {
-    //note that links that were once in the register but are no longer now
-    //reference the null object
-    this.register[this.name(link)] = null
+    this.register[this.name(link)] = undefined
 
     // find the element in the links array and remove it
     this.links.splice(this.index(link), 1)
@@ -127,7 +126,7 @@ proto.orphan_node = function(node) {
   for (var name in this.register) {
     // check to see if the i-th link has the node as a target or as a source
     link = this.register[name]
-    if (link === null){
+    if (!link){
       continue
     }
     remove = link.target[this.index_attr] === node[this.index_attr] ||
