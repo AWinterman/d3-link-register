@@ -5,12 +5,35 @@
 var d3 = require("d3")
   , LinkRegister = require("../index.js")
 
+
+// let's do a thousand nodes.
+var start_nodes = new Array(1000)
+
+// let's link 500 of them together
+var start_links = new Array(500)
+
+for(var i = 0, len = start_nodes.length; i < len; ++i) {
+  start_nodes[i] = {}
+}
+
+for(var i = 0, len = start_links.length; i < len; ++i) {
+  start_links[i] = {}
+  start_links[i].source = choose(start_nodes.length)
+  start_links[i].target = choose(start_nodes.length)
+}
+
+// a function to pick an element between 0 and length
+function choose(length) {
+  return ~~(Math.random() * length)
+}
+
+
 // Establishing some constants
-var width = 960
-  , height = 500
-  , CURSOR_WIDTH = 30
+var register = new LinkRegister(d3.layout.force(), start_links, start_nodes, 'idx')
   , DELETE_WIDTH = 30
-  , register = new LinkRegister(d3.layout.force(), null, [{}], 'idx')
+  , CURSOR_WIDTH = 30
+  , height = 500
+  , width = 960
 
 var fill = d3.scale.category20().domain(d3.range(20))
 
@@ -69,12 +92,12 @@ function mousedown() {
 
 function shift_mousedown() {
   var point = d3.mouse(this)
-      , nodes_to_remove = []
+    , nodes_to_remove = []
 
   register.nodes.forEach(function(target) {
     var x = target.x - point[0]
       , y = target.y - point[1] 
-    console.log(x*x + y*y, DELETE_WIDTH*DELETE_WIDTH)
+
     if (x*x + y*y < DELETE_WIDTH*DELETE_WIDTH) {
       this.push(target)
     }
@@ -116,15 +139,15 @@ function tick() {
 
 function restart() {
   var cn
-  link = link.data(register.links)
 
+  link = link.data(register.links)
   link.enter().insert("line", ".node")
       .attr("class", "link")
 
   link.exit().remove()
 
+  console.log(node)
   node = node.data(register.nodes, function(d){ return d.idx })
-
   node.exit().remove()
 
   cn = node.enter().insert("g", ".cursor")

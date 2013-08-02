@@ -1,19 +1,16 @@
 // TODO: rather than choosing a random sample, iterate through every available
 // example and test that one.
-var test = require("tape")
+var test = require('tape')
 //loading app and setting up some dummy data
 
-var LinkRegister = require("./index")
-  , assert = require("assert")
+var LinkRegister = require('../index')
+  , assert = require('assert')
 
 // run the tests for each possible choice of graph types. Currently this boils
 // down to whether or not loops (links which connect a  node to itself) are
 // allowed, and whether the graph is directed or not
 
-run(false, false)
-run(true, false)
-run(false, true)
-run(true, true)
+module.exports = run
 
 function run(loops, directed) { 
   var loops = loops || false
@@ -24,7 +21,7 @@ function run(loops, directed) {
 
   function register_generator(loops, directed) {
     return function(force, links, nodes) {
-      var register = new LinkRegister(force, links, nodes, "idx")
+      var register = new LinkRegister(force, links, nodes, 'idx')
       register.allow_loops(loops)
       register.directed(directed)
       return register
@@ -42,7 +39,7 @@ function run(loops, directed) {
   //initializing register object 
   var register = new_register(force, null, nodes)
 
-  test("has the right attributes", function(t){
+  test('has the right attributes', function(t){
     t.plan(13)
     t.notDeepEqual(register.nodes, undefined)
     t.notDeepEqual(register.links, undefined)
@@ -59,7 +56,7 @@ function run(loops, directed) {
     t.notDeepEqual(register.allow_loops, undefined)
   })
 
-  test("setters actually set", function(t){ 
+  test('setters actually set', function(t){ 
     t.plan(2)
 
     var register = new_register(force, null, nodes)
@@ -67,16 +64,16 @@ function run(loops, directed) {
     t.equal(register.allow_loops(), loops)
   })
 
-  test("nodes all have idx", function(t){
+  test('nodes all have idx', function(t){
     t.plan(register.nodes.length)
     register.nodes.forEach(
       function(d, i){ 
-        t.notDeepEqual(d.idx, undefined, "node " + i + " has an idx attribute" )
+        t.notDeepEqual(d.idx, undefined, 'node ' + i + ' has an idx attribute' )
       }
     )
   })
 
-  test("no repeated index attributes on the nodes", function(t){
+  test('no repeated index attributes on the nodes', function(t){
     t.plan(1)
     var expected = register.nodes.length
       , result = register.nodes.reduce(function(a, b){
@@ -86,10 +83,10 @@ function run(loops, directed) {
       return a
     }, [])
 
-    t.deepEqual(result.length, expected, "result had right length")
+    t.deepEqual(result.length, expected, 'result had right length')
   })
 
-  test("corrects idx when two nodes with identical idx are added", function(t) {
+  test('corrects idx when two nodes with identical idx are added', function(t) {
     var register = new_register()
       , expected = [0, 1, 2]
 
@@ -115,28 +112,28 @@ function run(loops, directed) {
     var expected = 0
       , result = register.index(L)
 
-    t.deepEqual(expected, result, "finds the link")
+    t.deepEqual(expected, result, 'finds the link')
 
     if (directed) {
       // looking for the reverrse of L should not add another link.
       expected = -1
       result = register.index(reverse(L))
-      t.deepEqual(expected, result, "reverse does not match the link")
+      t.deepEqual(expected, result, 'reverse does not match the link')
     } else {
       // looking for reverse should find the link
       expected = 0
       result = register.index(reverse(L))
-      t.deepEqual(expected, result, "reverse matches the link")
+      t.deepEqual(expected, result, 'reverse matches the link')
     }
 
   })
 
-  test("can add links", function(t){
+  test('can add links', function(t){
     t.plan(1)
-    t.ok(make_links(register, 20, "make links threw an exception"))
+    t.ok(make_links(register, 20, 'make links threw an exception'))
   })
 
-  test("does not duplicate existing links", function(t){
+  test('does not duplicate existing links', function(t){
     t.plan(1)
 
     var register = new_register(force, null, nodes)
@@ -150,7 +147,7 @@ function run(loops, directed) {
     t.deepEqual(register.links.length, 1)
   })
 
-  test("membership checks respect the `directed` setting", function(t) {
+  test('membership checks respect the `directed` setting', function(t) {
     t.plan(1)
     var register = new_register(force, null, nodes)
       , two = choose_two(nodes)
@@ -167,7 +164,7 @@ function run(loops, directed) {
     t.equal(expected, has)
   })
 
-  test("adding reverse links respects the `directed` setting", function(t) {
+  test('adding reverse links respects the `directed` setting', function(t) {
     t.plan(1)
     var register = new_register(force, null, nodes)
      , nodes
@@ -193,7 +190,7 @@ function run(loops, directed) {
     t.deepEqual(register.links.length, expected)
   })
 
-  test("adding loops respects `allow_loops` setting", function(t) {
+  test('adding loops respects `allow_loops` setting', function(t) {
     t.plan(1)
     var register = new_register(force, null, nodes)
       , i = ~~ (Math.random() * nodes.length)
@@ -210,7 +207,7 @@ function run(loops, directed) {
   })
 
 
-  test("remove a link", function(t){
+  test('remove a link', function(t){
     t.plan(4)
     //remove a few links:
     var register = new_register(force, null, nodes)
@@ -226,7 +223,7 @@ function run(loops, directed) {
     }
   })
 
-  test("remove reverse of a link respects directed setting", function(t) {
+  test('remove reverse of a link respects directed setting', function(t) {
     var register = new_register(force, null, nodes)
       , new_link
       , expected
