@@ -4,7 +4,7 @@
   "description": "Implements a class to make working with the data structure expected by D3js graph layouts easier.",
   "main": "index.js",
   "scripts": {
-    "test": "node tests.js",
+    "test": "node tests/index.js",
     "example": "beefy main.js --open --live --cwd=example/",
     "install-example": "npm install -g beefy && npm install d3 && npm install"
   },
@@ -23,7 +23,8 @@
     "tape": "~1.0.4"
   },
   "devDependencies": {
-    "tape": "~1.0.4"
+    "tape": "~1.0.4",
+    "sandwich": "~0.1.1"
   },
   "testling": {
     "files": "tests.js",

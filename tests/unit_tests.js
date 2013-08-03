@@ -1,32 +1,23 @@
-// TODO: rather than choosing a random sample, iterate through every available
-// example and test that one.
+// NEED to update this.
 var test = require('tape')
 //loading app and setting up some dummy data
 
 var LinkRegister = require('../index')
   , assert = require('assert')
 
+var links = []
+  , nodes = []
 // run the tests for each possible choice of graph types. Currently this boils
 // down to whether or not loops (links which connect a  node to itself) are
 // allowed, and whether the graph is directed or not
 
 module.exports = run
 
-function run(loops, directed) { 
-  var loops = loops || false
-    , directed = directed || false
-    , new_register = register_generator(loops, directed)
+function run(loops, directed, multiedge) { 
+  var new_register = register_generator()
     , nodes = []
     , force = {links: identity, nodes: identity}
 
-  function register_generator(loops, directed) {
-    return function(force, links, nodes) {
-      var register = new LinkRegister(force, links, nodes, 'idx')
-      register.allow_loops(loops)
-      register.directed(directed)
-      return register
-    }
-  }
 
   nodes.length = 20
   for (var i = 0, len = nodes.length; i < len; i = i +  2){
@@ -37,32 +28,7 @@ function run(loops, directed) {
 
 
   //initializing register object 
-  var register = new_register(force, null, nodes)
-
-  test('has the right attributes', function(t){
-    t.plan(13)
-    t.notDeepEqual(register.nodes, undefined)
-    t.notDeepEqual(register.links, undefined)
-    t.notDeepEqual(register.name, undefined)
-    t.notDeepEqual(register.has, undefined)
-    t.notDeepEqual(register.add_link, undefined)
-    t.notDeepEqual(register.add_node, undefined)
-    t.notDeepEqual(register.remove_link, undefined)
-    t.notDeepEqual(register.remove_node, undefined )
-    t.notDeepEqual(register.orphan_node, undefined )
-    t.notDeepEqual(register.init, undefined)
-    t.notDeepEqual(register.ensure_shape, undefined)
-    t.notDeepEqual(register.directed, undefined)
-    t.notDeepEqual(register.allow_loops, undefined)
-  })
-
-  test('setters actually set', function(t){ 
-    t.plan(2)
-
-    var register = new_register(force, null, nodes)
-    t.equal(register.directed(), directed)
-    t.equal(register.allow_loops(), loops)
-  })
+  var register = new_register(force, 'idx')
 
   test('nodes all have idx', function(t){
     t.plan(register.nodes.length)
@@ -77,7 +43,7 @@ function run(loops, directed) {
     t.plan(1)
     var expected = register.nodes.length
       , result = register.nodes.reduce(function(a, b){
-      if (a.indexOf(b.idx) === -1){
+      if(a.indexOf(b.idx) === -1) {
           a.push(b)
       }
       return a
@@ -105,7 +71,7 @@ function run(loops, directed) {
   test('register.index', function(t){
     t.plan(2)
 
-    var register = new_register(force, null, nodes)
+    var register = new_register()
     var L = {'source': register.nodes[0], 'target': register.nodes[1]}
     register.add_link(L)
 
@@ -125,7 +91,6 @@ function run(loops, directed) {
       result = register.index(reverse(L))
       t.deepEqual(expected, result, 'reverse matches the link')
     }
-
   })
 
   test('can add links', function(t){
@@ -187,22 +152,6 @@ function run(loops, directed) {
       }
     }
 
-    t.deepEqual(register.links.length, expected)
-  })
-
-  test('adding loops respects `allow_loops` setting', function(t) {
-    t.plan(1)
-    var register = new_register(force, null, nodes)
-      , i = ~~ (Math.random() * nodes.length)
-      , j = i
-      , new_link = {source: register.nodes[i], target: register.nodes[j]}
-
-    register.add_link(new_link)
-    if (register.allow_loops()){
-      expected = 1
-    } else {
-      expected = 0
-    }
     t.deepEqual(register.links.length, expected)
   })
 
@@ -270,7 +219,13 @@ function run(loops, directed) {
     }
     return register.links
   }
-}
+
+  function new_register(force) {
+    var register = new LinkRegister(loops, directed, multiedge)
+    register.init(force, 'idx')
+    return register
+  }
+} 
 
 
 function make_unidirectional_links(register) {
@@ -284,4 +239,20 @@ function chose_two(arr) {
     var i = ~~ (Math.random() * arr.length)
       , j = i === arr.length - 1 ? i - 1 : i + 1
     return [arr[i], arr[j]]
+}
+
+function Force() {
+  var self = this
+
+  this.links = function(x) {
+    if(!arguments.length) return links
+    links = x
+    return self
+  }
+
+  this.nodes = function(x) {
+    if(!arguments.length) return nodes
+    nodes = x
+    return self
+  }
 }

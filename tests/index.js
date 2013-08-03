@@ -1,6 +1,12 @@
-run_units = require('./unit_tests.js')
+sandwich = require('sandwich')
 
-run_units(false, false)
-run_units(true, false)
-run_units(false, true)
-run_units(true, true)
+run_links = require('./links/remove')
+
+var loops = [true, false]
+  , directed = [true, false]
+  , multiedge = [true, false]
+  , options = sandwich(loops, directed, multiedge)
+
+
+args = options.next()
+run_links()

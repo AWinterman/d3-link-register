@@ -5,12 +5,11 @@
 var d3 = require("d3")
   , LinkRegister = require("../index.js")
 
-
 // let's do a thousand nodes.
-var start_nodes = new Array(1000)
+var start_nodes = new Array(10)
 
 // let's link 500 of them together
-var start_links = new Array(500)
+var start_links = new Array(10)
 
 for(var i = 0, len = start_nodes.length; i < len; ++i) {
   start_nodes[i] = {}
@@ -28,8 +27,9 @@ function choose(length) {
 }
 
 
+
 // Establishing some constants
-var register = new LinkRegister(d3.layout.force(), start_links, start_nodes, 'idx')
+var register = new LinkRegister(false, false, false)
   , DELETE_WIDTH = 30
   , CURSOR_WIDTH = 30
   , height = 500
@@ -38,13 +38,15 @@ var register = new LinkRegister(d3.layout.force(), start_links, start_nodes, 'id
 var fill = d3.scale.category20().domain(d3.range(20))
 
 // The force directed graph.
-var force = register.force
+var force = d3.layout.force()
+    .nodes(start_nodes)
+    .links(start_links)
     .size([width, height])
     .linkDistance(30)
     .charge(-60)
     .on("tick", tick)
 
-register.init()
+register.init(force, 'idx')
 
 var svg = d3.select("#graph")
     .append("svg")
@@ -62,7 +64,7 @@ var cursor = svg.append("circle")
     .attr("class", "cursor")
 
 d3.select(window)
-  .on("keydown", function(){
+  .on("keydown", function() {
     if (event.keyCode === 16) {
       cursor.attr("r", DELETE_WIDTH)
             .attr("class", "cursor delete")
@@ -112,7 +114,6 @@ function regular_mousedown() {
   var point = d3.mouse(this)
     , node = {x: point[0], y: point[1]}
 
-  // nodes.push(node)
   register.add_node(node)
 
   // add links to any nearby nodes
@@ -132,6 +133,7 @@ function tick() {
       .attr("x2", function(d) { return d.target.x })
       .attr("y2", function(d) { return d.target.y })
 
+  /* node.each(function(d){ console.log(d) }) */
   node.attr("transform", function(d){
     return "translate(" + d.x + "," + d.y + ")"
   })
@@ -146,7 +148,6 @@ function restart() {
 
   link.exit().remove()
 
-  console.log(node)
   node = node.data(register.nodes, function(d){ return d.idx })
   node.exit().remove()
 
@@ -161,7 +162,7 @@ function restart() {
     .attr("transform", "translate(10, 5)")
     .text(function(d){ return d.idx })
 
-  cn.call(force.drag)
+  cn.call(register.force.drag)
 
-  force.start()
+  register.force.start()
 }
